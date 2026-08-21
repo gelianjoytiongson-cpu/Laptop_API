@@ -19,7 +19,7 @@ import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-app = Flask(_name_)
+app = Flask(__name__)
 CORS(app)  # allow the Flutter app (different origin/device) to call this API
 
 BUNDLE_PATH = 'laptop_price_model.pkl'
@@ -145,7 +145,7 @@ def predict():
     return jsonify({'predicted_price': round(predicted_price, 2)})
 
 
-if _name_ == '_main_':
+if __name__ == '_main_':
     # host='0.0.0.0' so a physical phone / emulator on the same network
     # (or an Android emulator via 10.0.2.2) can reach this server.
     app.run(host='0.0.0.0', port=5000, debug=True)
