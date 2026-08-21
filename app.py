@@ -5,9 +5,10 @@ Flask backend for the Flutter laptop-price-prediction app.
 Loads laptop_price_model.pkl (produced by train_and_export.py) and
 exposes:
 
-    GET  /health    -> simple liveness check
-    GET  /options   -> valid dropdown values for every categorical field
-    POST /predict    -> predicted price for a given laptop spec
+    GET  /           -> root status check (for a quick browser test)
+    GET  /health      -> simple liveness check
+    GET  /options     -> valid dropdown values for every categorical field
+    POST /predict     -> predicted price for a given laptop spec
 
 Run with:
     python app.py
@@ -18,7 +19,7 @@ import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(_name_)
 CORS(app)  # allow the Flutter app (different origin/device) to call this API
 
 BUNDLE_PATH = 'laptop_price_model.pkl'
@@ -103,6 +104,17 @@ def validate_payload(payload):
     return None
 
 
+@app.route('/', methods=['GET'])
+def index():
+    """Root status check — handy for confirming the deploy is live
+    straight from a browser, without needing to know a specific route."""
+    return jsonify({
+        'status': 'online',
+        'service': 'Laptop Price Prediction API',
+        'endpoints': ['/health', '/options', '/predict'],
+    })
+
+
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({'status': 'ok'})
@@ -133,7 +145,7 @@ def predict():
     return jsonify({'predicted_price': round(predicted_price, 2)})
 
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     # host='0.0.0.0' so a physical phone / emulator on the same network
     # (or an Android emulator via 10.0.2.2) can reach this server.
     app.run(host='0.0.0.0', port=5000, debug=True)
